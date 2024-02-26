@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#fd5c32',
   },
-  selectedCategoryText:{
+  selectedCategoryText: {
     color: "#fd5c32",
   }
 });

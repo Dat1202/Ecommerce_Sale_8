@@ -73,7 +73,7 @@ class EcommerceAdminSite(admin.AdminSite):
         if request.method == 'POST':
             users = User.objects.filter(pk__in=request.POST.getlist("users"))
             if request.POST["action"] == "reject":
-                users.update(status="Rejected")
+                User.objects.filter(pk__in=request.POST["users"]).update(status="Rejected")
             else:
                 store_role = Group.objects.get(pk=3)
                 users.update(status="Approved", user_role_id=store_role)

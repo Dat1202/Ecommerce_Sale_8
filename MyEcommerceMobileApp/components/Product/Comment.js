@@ -51,6 +51,7 @@ const Comment = ({ route, navigation }) => {
             console.error(error);
         }
     }
+    
     return (
         <View>
             <Text>Bình luận</Text>

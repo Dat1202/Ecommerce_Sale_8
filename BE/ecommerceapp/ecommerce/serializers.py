@@ -10,6 +10,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
+
     class Meta:
         model = User
         fields = ['username', 'password', 'last_name', 'first_name', 'avatar', 'store', 'user_role', 'status']
@@ -18,12 +20,6 @@ class UserSerializer(serializers.ModelSerializer):
             'password': {
                 'write_only': True
             },
-            'store': {
-                'read_only': True
-            },
-            'status': {
-                'read_only': True
-            }
         }
 
     def create(self, validated_data):
@@ -37,9 +33,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class StoreSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Store
-        fields = ['id', 'name', 'description', 'location']
+        fields = ['id', 'name', 'description', 'location', 'user']
 
     def create(self, validated_data):
         request = self.context.get("request")
@@ -76,6 +74,39 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'price', 'image', 'description', 'category', 'store']
 
 
+class ProductSoldSerializer(serializers.ModelSerializer):
+    count = serializers.SerializerMethodField()
+
+    def get_count(self, obj):
+        return obj['count']
+
+    class Meta:
+        model = Product
+        fields = ['id', 'count']
+
+
+class StoreAgvStarSerializer(serializers.ModelSerializer):
+    avg_star = serializers.SerializerMethodField()
+
+    def get_avg_star(self, obj):
+        return obj['avg_star']
+
+    class Meta:
+        model = Store
+        fields = ['id', 'avg_star']
+
+
+class StatsRevenueStoreSerializer(serializers.ModelSerializer):
+    total_price = serializers.SerializerMethodField()
+
+    def get_total_price(self, obj):
+        return obj
+
+    class Meta:
+        model = Store
+        fields = ['id', 'total_price']
+
+
 class OrderDetailListSerializer(serializers.ListSerializer):
     def create(self, validated_data):
         o = Order()
@@ -96,6 +127,8 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         fields = ['quantity', 'unit_price', 'product']
         list_serializer_class = OrderDetailListSerializer
 
+
+# serializer.py
 
 class ReviewSerializer(serializers.ModelSerializer):
     user = UserSerializer()

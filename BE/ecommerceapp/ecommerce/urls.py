@@ -10,7 +10,6 @@ router.register('users', views.UserViewSet, basename='users')
 router.register('payment', views.ReceiptViewSet, basename='payment')
 router.register('reviews', views.ReviewViewSet, basename='reviews')
 
-
 urlpatterns = [
     path('', include(router.urls)),
     path('admin/stats-count-admin/', admin.EcommerceAdminSite.stats),

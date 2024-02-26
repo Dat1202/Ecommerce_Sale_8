@@ -11,8 +11,8 @@ import { useContext } from "react";
 const Review = ({ route, navigation }) => {
     const [rating, setRating] = React.useState(5);
     const { storeId, star } = route.params;
-    const [reviews, setReview] = React.useState([]);
-    const [note, setNote] = React.useState([]);
+    const [reviews, setReview] = React.useState("");
+    const [note, setNote] = React.useState("");
     const [user, dispatch] = useContext(MyContext)
 
     React.useEffect(() => {
@@ -95,9 +95,6 @@ const Review = ({ route, navigation }) => {
                     </View>
                 </View>
             )}
-
-
-
 
             <FilterReview route={route} />
 

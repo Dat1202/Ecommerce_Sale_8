@@ -21,12 +21,22 @@ const Store = ({ route, navigation }) => {
   const data = ['Sản phẩm', 'Danh mục', 'Review'];
   const { storeId, sortBy, order } = route.params;
   const [user, dispatch] = useContext(MyContext)
+  const [storeAvgStar, setStoreAvgStar] = React.useState(null);
 
   React.useEffect(() => {
     const loadStore = async () => {
       try {
         const res = await Apis.get(endpoints['store'](storeId));
         setStore(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    const loadStoreAvgStar = async () => {
+      try {
+        const res = await Apis.get(endpoints['get-avg-star'](storeId));
+        setStoreAvgStar(res.data);
       } catch (error) {
         console.error(error);
       }
@@ -64,9 +74,10 @@ const Store = ({ route, navigation }) => {
       }
     }
 
-    loadProductStore()
-    loadCateStore()
+    loadProductStore();
+    loadCateStore();
     loadStore();
+    loadStoreAvgStar();
 
   }, [sortBy, order, searchQuery]);
 
@@ -87,6 +98,10 @@ const Store = ({ route, navigation }) => {
       <View>Add SP</View>
     </TouchableOpacity>
   }
+  const addCloudinaryDomain = (publicId) => {
+    const cloudinaryDomain = 'res.cloudinary.com/dy4p98hhs/';
+    return `https://${cloudinaryDomain}/${publicId}`;
+  };
 
   return (
     <View style={{
@@ -109,7 +124,7 @@ const Store = ({ route, navigation }) => {
 
             <View className="flex-row items-center mt-2 p-4">
               <Image
-                source={{ uri: 'https://res.cloudinary.com/dy4p98hhs/image/upload/v1705723922/i01x5nw5i5ine1lvtwms.jpg' }}
+                source={{ uri: addCloudinaryDomain(store.user.avatar) }}
                 style={{
                   width: 80,
                   height: 80,
@@ -122,7 +137,12 @@ const Store = ({ route, navigation }) => {
                   <Text className="font-medium text-xl">{store.name}</Text>
                 </View>
                 <Text>
-                  <Entypo name="star" size={20} color="#e3ec13" /> 4.6  Đã bán 250
+                  <Entypo name="star" size={20} color="#e3ec13" />
+                  {storeAvgStar === null || storeAvgStar === undefined || storeAvgStar[0] === null || storeAvgStar[0] === undefined
+                    ? <Text>0</Text>
+                    : (
+                      <Text>Đã bán {storeAvgStar[0].avg_star}</Text>
+                    )}
                 </Text>
               </View>
             </View>

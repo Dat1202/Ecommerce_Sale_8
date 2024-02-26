@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const ProductDetails = ({ route, navigation }) => {
   const { productId } = route.params;
   const [product, setProduct] = React.useState(null);
+  const [productSold, setProductSold] = React.useState(null);
   const windowDimensions = useWindowDimensions();
 
   React.useEffect(() => {
@@ -22,6 +23,16 @@ const ProductDetails = ({ route, navigation }) => {
       }
     };
 
+    const loadProductSold = async () => {
+      try {
+        const res = await Apis.get(endpoints['sold'](productId));
+        setProductSold(res.data);
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    loadProductSold();
     loadProduct();
   }, [productId]);
 
@@ -82,6 +93,14 @@ const ProductDetails = ({ route, navigation }) => {
   //   </>
   // }
 
+  const handleViewCompare = () => {
+    navigation.navigate('Compare', { "cateId": product.category.id, "productName": product.name });
+  };
+
+  const addCloudinaryDomain = (publicId) => {
+    const cloudinaryDomain = 'res.cloudinary.com/dy4p98hhs/';
+    return `https://${cloudinaryDomain}/${publicId}`;
+  };
   return (
     <ScrollView className="bg-slate-100" style={styles.container}>
       <View className="relative">
@@ -93,9 +112,19 @@ const ProductDetails = ({ route, navigation }) => {
       <View className="bg-white p-4 mb-2" style={{ width: windowDimensions.width }}>
         <Text className="font-bold text-2xl mb-2 text-red-500" >₫{product.price}</Text>
         <Text className="font-bold text-2xl mb-4" numberOfLines={2} ellipsizeMode="tail">{product.name}</Text>
-        <Text>
-          <Entypo name="star" size={20} color="#e3ec13" /> 4.6/5 | Đã bán 250
-        </Text>
+        <View className="flex-row justify-between	">
+          {productSold === null || productSold === undefined || productSold[0] === null || productSold[0] === undefined
+            ? <Text>Đã bán 0</Text>
+            : (
+              <Text>Đã bán {productSold[0].count}</Text>
+            )}
+
+          <View>
+            <TouchableOpacity className="border-2	border-red-600 p-1" onPress={handleViewCompare}>
+              <Text className="text-red-500	s">So sánh</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
 
       <View className="bg-white p-4 flex-row justify-between	">
@@ -109,7 +138,8 @@ const ProductDetails = ({ route, navigation }) => {
       <View className="bg-white p-4 flex-row justify-between	">
         <View className="flex-row">
           <Image
-            source={{ uri: 'https://res.cloudinary.com/dy4p98hhs/image/upload/v1705723922/i01x5nw5i5ine1lvtwms.jpg' }}
+            source={{ uri: addCloudinaryDomain(product.store.user.avatar) }}
+
             style={{
               width: 80,
               height: 80,
