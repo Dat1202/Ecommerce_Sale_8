@@ -1,5 +1,5 @@
 from rest_framework.generics import get_object_or_404
-from .models import Category, Product, User, Store, Review, Comment, OrderDetail
+from .models import Category, Product, User, Store, Review, Comment, OrderDetail, Order
 from rest_framework import serializers
 
 
@@ -79,7 +79,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class OrderDetailListSerializer(serializers.ListSerializer):
     def create(self, validated_data):
         o = Order()
-        o.user = self.context.get('user')
+        o.user = User.objects.get(username='admin')
         ods = []
         o.save()
         for item in validated_data:
@@ -95,10 +95,6 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         model = OrderDetail
         fields = ['quantity', 'unit_price', 'product']
         list_serializer_class = OrderDetailListSerializer
-
-    # Dung context de lay Product Id va tao Order o ben View
-    def create(self, validated_data):
-        pass
 
 
 class ReviewSerializer(serializers.ModelSerializer):
