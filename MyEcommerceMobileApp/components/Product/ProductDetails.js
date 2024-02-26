@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import RenderHTML from 'react-native-render-html';
 import { Entypo } from '@expo/vector-icons';
 import Comment from './Comment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductDetails = ({ route, navigation }) => {
   const { productId } = route.params;
@@ -57,6 +58,41 @@ const ProductDetails = ({ route, navigation }) => {
     },
   };
 
+  const addToCart = async (p) => {
+    // Lưu đơn vào cookies
+    // let cart = cookie.load("cart") || null;
+    let cart = await AsyncStorage.getItem("cart") || null;
+    cart = JSON.parse(cart)
+    if (cart === null)
+        cart = {};
+    
+    if (p.id in cart) {
+        // sản phẩm đã có trong giỏ
+        cart[p.id]["quantity"] += 1;
+    } else {
+        // sản phẩm chưa có trong giỏ
+        cart[p.id] = {
+            "product": p.id,
+            "name": p.name,
+            "unit_price": p.price,
+            "quantity": 1
+        };
+    }
+    await AsyncStorage.setItem("cart", JSON.stringify(cart))
+    console.log(cart)
+  }
+
+  // if(user !== null && product.store.user === user) {
+  //   <>
+  //     <TouchableOpacity onPress={navigate('PostProduct')}> // vào trang add/update sp
+  //       <View>Update SP</View>
+  //     </TouchableOpacity>
+  //     <TouchableOpacity onPress={Apis.delete["product-details"](product.id)}> // send delete request ròi navigate về store: navigate('store')
+  //       <View>Delete SP</View>
+  //     </TouchableOpacity>
+  //   </>
+  // }
+
   const handleViewCompare = () => {
     navigation.navigate('Compare', { "cateId": product.category.id, "productName": product.name });
   };
@@ -88,6 +124,14 @@ const ProductDetails = ({ route, navigation }) => {
               <Text className="text-red-500	s">So sánh</Text>
             </TouchableOpacity>
           </View>
+        </View>
+      </View>
+
+      <View className="bg-white p-4 flex-row justify-between	">
+        <View>
+          <TouchableOpacity className="border-2	border-red-600 p-1 " style={styles.viewShopButton} onPress={() =>addToCart(product)}>
+            <Text className="text-red-500	">Thêm vào giỏ hàng </Text>
+          </TouchableOpacity>
         </View>
       </View>
 

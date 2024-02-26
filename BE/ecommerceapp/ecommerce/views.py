@@ -260,11 +260,12 @@ class ReceiptViewSet(viewsets.ViewSet):
         #     od.save()
 
         # user = self.get_object()
-        serialized = serializers.OrderDetailSerializer(data=request.data, many=True, context={'user': request.user})
+        print(request.user)
+        serialized = serializers.OrderDetailSerializer(data=request.data, many=True, context={'user': request.user.pk})
         if serialized.is_valid():
             # for item in serialized.validated_data:
+            #     print(item)
             #     item.order(serialized.validated_data['password'])
-            #     user.save()
             serialized.save()
             return Response({'status': 'Pay successfully'}, status=status.HTTP_200_OK, )
         else:

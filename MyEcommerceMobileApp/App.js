@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { createContext, useReducer } from "react";
 import Home from './components/Home/Home'
 import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
@@ -10,6 +10,7 @@ import Login from './components/User/Login';
 import Register from './components/User/Register';
 import MyUserReducer from './reducers/MyUserReducer';
 import MyContext from './configs/MyContext';
+import MyCartContext from './configs/MyCartContext';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import Profiles from "./components/User/Profiles";
@@ -18,20 +19,39 @@ import Review from "./components/Store/Review";
 import Comment from "./components/Product/Comment";
 import RegisterStore from "./components/User/RegisterStore";
 import Logout from "./components/User/Logout";
+import MyCartCounterReducer from "./reducers/MyCartCounterReducer";
+import Cart from "./components/Cart/Cart";
+import PostProduct from "./components/Product/PostProduct";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Compare from "./components/Product/Compare";
 import Chart from "./components/AdminStore/Chart";
-import Cart from "./components/Cart/Cart";
 import Test from "./components/Home/Test";
 
 const Tab = createBottomTabNavigator();
 
+const countCartItem = () => {
+    var carts = null;
+    let getCarts = async (carts) => {
+        let cart = await AsyncStorage.getItem('cart');
+        return JSON.parse(cart)
+    }
+    getCarts().then(x => carts = x)
+    console.log(carts)
+    if (carts !== null) {
+        return Object.values(carts).reduce((init, current) => init + current["quantity"], 0);
+    }
+    return 0;
+  }
+
 const App = () => {
     var base_color = "#ff5722"
     const [user, dispatch] = useReducer(MyUserReducer, null)
-    console.log("App:", JSON.stringify(user));
+    const [cartCounter, cartDispatch] = useReducer(MyCartCounterReducer , countCartItem());
+    console.log(cartCounter)
     return (
         <SafeAreaProvider>
             <MyContext.Provider value={[user, dispatch]}>
+            <MyCartContext.Provider value={[cartCounter, cartDispatch]}>
                 <NavigationContainer>
                     <Tab.Navigator initialRouteName={Home}
                         screenOptions={{ headerShown: false }} backBehavior={"history"}
@@ -48,6 +68,8 @@ const App = () => {
                             tabBarIcon: ({ color }) => (
                                 <Feather name="shopping-cart" size={24} color={color} />
                             ),
+                            unmountOnBlur: true,
+                            tabBarBadge: cartCounter
                         }} />
                         <Tab.Screen name='Profiles' component={Profiles} options={{
                             title: "Profiles",
@@ -86,6 +108,10 @@ const App = () => {
                         <Tab.Screen name="Comment" component={Comment} options={{
                             tabBarItemStyle: { display: "none" }
                         }} />
+
+                        <Tab.Screen name="PostProduct" component={PostProduct} options={{
+                            tabBarItemStyle: { display: "none" }
+                        }} />
                         <Tab.Screen name="Compare" component={Compare} options={{
                             tabBarItemStyle: { display: "none" }
                         }} />
@@ -97,6 +123,7 @@ const App = () => {
                         }} />
                     </Tab.Navigator>
                 </NavigationContainer>
+            </MyCartContext.Provider>
             </MyContext.Provider>
         </SafeAreaProvider>
     );

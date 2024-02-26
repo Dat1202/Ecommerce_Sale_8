@@ -30,8 +30,8 @@ const Login = ({ navigation }) => {
             let res = await Apis.post(endpoints['login'], {
                 "username": username,
                 "password": password,
-                "client_id": "Gz8MgPSlyWzCHrXn1BZaow4qddpzab3i0QWNmSJz",
-                "client_secret": "2r7CGvoBBFuCmqqM6fbThAPtYOoykchi8z85djQ2IQwgpvbjNCjn4SGbX2xLkcB1wvaZRDizuSLa9Oo22UGPRgKwmFMIn0MY6t10bIanZ11aEH97TRDJoTRLJXMCVUN0",
+                "client_id": "jh0EnJFe2uGzTc3kY7kbLHtUgW7NILwkcY9dpt17",
+                "client_secret": "GCUhrDHUFqnGiXGXBSrHV2V0Ip3vBoKSL4xoIVa4eLrNPNG64sptXUoEZqF91KBWHCLFJOEbR1SWDENVPzqXARDR24IpprelYyjWmsPOvWkmtzUe21VY3qRYPEWBRqs1",
                 "grant_type": "password"
             });
             await AsyncStorage.setItem('access-token', res.data.access_token)
