@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, { Axios } from "axios";
 
-const Host = 'http://192.168.1.12:8000'
+const Host = 'http://192.168.1.5:8000'
 
 export const endpoints = {
     'categories': '/categories/',
@@ -17,7 +17,8 @@ export const endpoints = {
     'comments': (productId) => `/products/${productId}/comments/`,
     'add-comments': (productId) => `/products/${productId}/add_comments/`,
     'product-details': (productId) => `/products/${productId}`,
-    'register-store': '/store/register-store/'
+    'register-store': '/store/register-store/',
+    'pay': '/payment/'
 }
 
 export const authApi = (accessToken) => {

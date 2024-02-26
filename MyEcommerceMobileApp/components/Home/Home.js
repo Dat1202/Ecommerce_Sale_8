@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import Apis, { endpoints } from '../../configs/Apis';
 import CardItem from '../Share/CardItem';
 import SearchComponent from '../Share/Search';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Cate from '../Share/Category';
+import ProductDetails from '../Product/ProductDetails';
 
 const Home = ({ navigation, route }) => {
   const [products, setProducts] = useState(null);
@@ -73,9 +74,9 @@ const Home = ({ navigation, route }) => {
           </View>
         ) : (
           products.map((data) => (
-            <View key={data.id}>
-              <CardItem navigation={navigation} data={data} />
-            </View>
+              <View key={data.id}>
+                <CardItem navigation={navigation} data={data} />
+              </View>
           ))
         )}
       </ScrollView>

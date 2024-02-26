@@ -1,5 +1,5 @@
 import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import Apis, { endpoints } from '../../configs/Apis';
 import { Ionicons } from '@expo/vector-icons';
 import SearchComponent from '../Share/Search';
@@ -9,6 +9,7 @@ import Category from './Category';
 import CardItem from '../Share/CardItem';
 import Filter from '../Share/Filter';
 import Review from './Review';
+import MyContext from '../../configs/MyContext';
 
 const Store = ({ route, navigation }) => {
   const [selectedCategory, setSelectedCategory] = React.useState('Sản phẩm');
@@ -19,6 +20,7 @@ const Store = ({ route, navigation }) => {
   const insets = useSafeAreaInsets();
   const data = ['Sản phẩm', 'Danh mục', 'Review'];
   const { storeId, sortBy, order } = route.params;
+  const [user, dispatch] = useContext(MyContext)
 
   React.useEffect(() => {
     const loadStore = async () => {
@@ -79,6 +81,12 @@ const Store = ({ route, navigation }) => {
   const handleCategoryPress = (category) => {
     setSelectedCategory(category);
   };
+
+  if(user !== null && store.user === user) {
+    <TouchableOpacity onPress={navigation.navigate('PostProduct')}> // vào trang add/update sp
+      <View>Add SP</View>
+    </TouchableOpacity>
+  }
 
   return (
     <View style={{
