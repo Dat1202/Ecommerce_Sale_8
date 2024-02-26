@@ -30,7 +30,8 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 CORS_ORIGIN_ALLOW_ALL = True
 
 ALLOWED_HOSTS = [
-    'http://192.168.1.12:8081', '192.168.1.12'
+    'http://192.168.1.12:8081', '192.168.1.12','http://192.168.1.7:8081', '192.168.1.7'
+    ,'http://192.168.1.8:8081', '192.168.1.8'
 ]
 
 CORS_ALLOW_METHODS = [
@@ -154,7 +155,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
+OAUTH2_PROVIDER = {
+    'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
+}
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -162,8 +165,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 'jh0EnJFe2uGzTc3kY7kbLHtUgW7NILwkcY9dpt17'
 # 'GCUhrDHUFqnGiXGXBSrHV2V0Ip3vBoKSL4xoIVa4eLrNPNG64sptXUoEZqF91KBWHCLFJOEbR1SWDENVPzqXARDR24IpprelYyjWmsPOvWkmtzUe21VY3qRYPEWBRqs1'
-OAUTH2_PROVIDER = {
-    'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
-}
+
 # 'l9zMXQgw7Zla0uGOQAXD00dzOmKJpEjZkQUO9Rtk'
 # 'v0NuFjG03lbFUBlOAaE8cpiju5oNSNnToS7fWU9oKoGVJiSmUUaOJo55SRH0YL9bR9JKNOYAZH1K6YmbYZ1qUiOAfI3QgkGcGzm4XBDYnW5yZvpju8iBFA4KGxFoWxh4'

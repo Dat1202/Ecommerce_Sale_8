@@ -14,12 +14,16 @@ const Product = ({ route, navigation }) => {
         const loadProductStore = async () => {
             let url = endpoints["products-store"](storeId);
 
-            if (cateId !== undefined && cateId !== null)
+            if (order !== undefined && order !== null && cateId !== undefined && cateId !== null)
+                url = `${url}?order=${order}&cateId=${cateId}`;
+            else if (sortBy !== undefined && sortBy !== null && cateId !== undefined && cateId !== null)
+                url = `${url}?sortBy=${sortBy}&cateId=${cateId}`;
+            else if (cateId !== undefined && cateId !== null)
                 url = `${url}?cate_id=${cateId}`
-            else if (sortBy !== undefined && sortBy !== null)
-                url = `${url}?sort_by=${sortBy}`
-            else if (order !== undefined && order !== null)
-                url = `${url}?order=${order}`
+            // else if (sortBy !== undefined && sortBy !== null)
+            //     url = `${url}?sort_by=${sortBy}`
+            // else if (order !== undefined && order !== null)
+            //     url = `${url}?order=${order}`
 
             try {
                 const res = await Apis.get(url);

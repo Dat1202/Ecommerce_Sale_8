@@ -69,16 +69,16 @@ class EcommerceAdminSite(admin.AdminSite):
             'stats_revenue_store': stats_revenue_store
         })
 
-
     def store_approval(self, request):
         if request.method == 'POST':
-            users = User.objects.filter(pk__in=request.POST["users"])
+            # users = User.objects.filter(pk__in=request.POST["users"])
             print(request.POST)
             if request.POST["action"] == "reject":
-                users.update(status="Rejected")
+                User.objects.filter(pk__in=request.POST["users"]).update(status="Rejected")
             else:
                 store_role = Store.objects.get(pk=3)
-                users.update(status="Approved", user_role_id=store_role)
+                User.objects.filter(pk__in=request.POST["users"]).update(status="Approved", user_role_id=store_role)
+
 
         stores = Store.objects.filter(user__status="Pending").all()
         return render(request, 'admin/store_approval.html', {

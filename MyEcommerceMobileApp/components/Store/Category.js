@@ -5,7 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 const Category = ({ category, storeId, navigation}) => {
 
     const handleViewProduct = () => {
-        navigation.navigate('Product', { "storeId": storeId }, { "cateId": category.id });
+        navigation.navigate('Product', { "storeId": storeId, "cateId": category.id });
     };
 
     return (

@@ -1,5 +1,5 @@
 const MyUserReducer = (currentState, action) => {
-    console.log(`Reducer: ${currentState}`)
+    // console.log(`Reducer: ${currentState}`)
     switch (action.type) {
         case "login":
             return action.payload;
