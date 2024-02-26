@@ -28,10 +28,12 @@ const Cart = ({navigation}) => {
             return true
         }
         let loadCart = async () => {
+            console.log("Reload!!!")
             try {
                 let cartAsync = await AsyncStorage.getItem('cart')
                 const new_cart = JSON.parse(cartAsync)
-                if(!deepEqual(new_cart, carts, {strict: true}) && !isSameObj(new_cart, carts))
+                console.log(isSameObj(new_cart, carts))
+                if(!deepEqual(new_cart, carts, {strict: true}) || !isSameObj(new_cart, carts))
                     setCarts(new_cart)
                 console.log(carts)
             } catch (ex) {
@@ -53,15 +55,16 @@ const Cart = ({navigation}) => {
     }
 
     const increQuantity = async (id) => {
-        carts[id]["quantity"] += 1;
-        console.log(carts)
-        await AsyncStorage.setItem('cart', JSON.stringify(carts))
-        setCarts(carts)
+        let new_cart = JSON.parse(JSON.stringify(carts))
+        new_cart[id]["quantity"] += 1
+        await AsyncStorage.setItem('cart', JSON.stringify(new_cart))
+        setCarts({...carts, [id]: {...carts[id], "quantity": carts[id]["quantity"] += 1}})
     }
     const decreQuantity = async (id) => {
-        carts[id]["quantity"] -= 1;
-        await AsyncStorage.setItem('cart', JSON.stringify(carts))
-        setCarts(carts)
+        let new_cart = JSON.parse(JSON.stringify(carts))
+        new_cart[id]["quantity"] -= 1
+        await AsyncStorage.setItem('cart', JSON.stringify(new_cart))
+        setCarts({...carts, [id]: {...carts[id], "quantity": carts[id]["quantity"] -= 1}})
     }
 
     const deleteItem = async (item) => {
@@ -71,11 +74,11 @@ const Cart = ({navigation}) => {
             //     "type": "dec",
             //     "payload": item.quantity
             // });
-            setCarts(current => {
-                delete current[item.product];
-                return current;
-            });
+            let new_cart = JSON.parse(JSON.stringify(carts));
+            delete new_cart[item.product];
+            delete carts[item.product]
             await AsyncStorage.setItem('cart', JSON.stringify(carts))
+            setCarts(new_cart);
         }
         await AsyncStorage.setItem('cart', JSON.stringify(carts))
     }
