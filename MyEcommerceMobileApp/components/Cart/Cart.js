@@ -45,16 +45,6 @@ const Cart = ({navigation}) => {
         setTotal(getTotalPrice(carts))
     }, [carts])
 
-    const updateItem = async () => {
-        // cookie.save("cart", carts);
-        AsyncStorage.setItem('cart', JSON.stringify(carts))
-
-        cartDispatch({
-            "type": "update",
-            "payload": Object.values(carts).reduce((init, current) => init + current["quantity"], 0)
-        })
-    }
-
     function getTotalPrice(obj) {
         let totalPrice = 0;
         
@@ -72,12 +62,20 @@ const Cart = ({navigation}) => {
       }
 
     const increQuantity = async (id) => {
+        cartDispatch({
+            "type": "inc",
+            "payload": 1
+        });
         let new_cart = JSON.parse(JSON.stringify(carts))
         new_cart[id]["quantity"] += 1
         await AsyncStorage.setItem('cart', JSON.stringify(new_cart))
         setCarts({...carts, [id]: {...carts[id], "quantity": carts[id]["quantity"] += 1}})
     }
     const decreQuantity = async (id) => {
+        cartDispatch({
+            "type": "dec",
+            "payload": 1
+        });
         let new_cart = JSON.parse(JSON.stringify(carts))
         new_cart[id]["quantity"] -= 1
         await AsyncStorage.setItem('cart', JSON.stringify(new_cart))
@@ -86,10 +84,10 @@ const Cart = ({navigation}) => {
 
     const deleteItem = async (item) => {
         if (item.product in carts) {
-            // cartDispatch({
-            //     "type": "dec",
-            //     "payload": item.quantity
-            // });
+            cartDispatch({
+                "type": "dec",
+                "payload": item.quantity
+            });
             let new_cart = JSON.parse(JSON.stringify(carts));
             delete new_cart[item.product];
             delete carts[item.product]
@@ -105,7 +103,7 @@ const Cart = ({navigation}) => {
             for (let item in carts) {
                 data.push(carts[item])
             }
-            let access_token = AsyncStorage.getItem('access-token')
+            let access_token = await AsyncStorage.getItem('access-token')
             let res = await authApi(access_token).post(endpoints['pay'], data);
             if (res.status === 200) {
                 // cookie.remove("cart");

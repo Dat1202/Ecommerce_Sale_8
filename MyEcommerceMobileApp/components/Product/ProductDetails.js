@@ -7,12 +7,14 @@ import { Entypo } from '@expo/vector-icons';
 import Comment from './Comment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MyContext from '../../configs/MyContext';
+import MyCartContext from '../../configs/MyCartContext';
 
 const ProductDetails = ({ route, navigation }) => {
   const { productId } = route.params;
   const [product, setProduct] = React.useState(null);
   const [productSold, setProductSold] = React.useState(null);
   const windowDimensions = useWindowDimensions();
+  const [, cartDispatch] = useContext(MyCartContext);
   const [user, dispatch] = useContext(MyContext);
 
 
@@ -65,6 +67,10 @@ const ProductDetails = ({ route, navigation }) => {
   const addToCart = async (p) => {
     // Lưu đơn vào cookies
     // let cart = cookie.load("cart") || null;
+    cartDispatch({
+        "type": "inc",
+        "payload": 1
+    });
     let cart = await AsyncStorage.getItem("cart") || null;
     cart = JSON.parse(cart)
     if (cart === null)
