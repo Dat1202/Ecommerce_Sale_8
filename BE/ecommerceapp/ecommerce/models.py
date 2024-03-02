@@ -63,7 +63,7 @@ class OrderDetail(models.Model):
     quantity = models.IntegerField()
     order = (models.ForeignKey
              (Order, on_delete=models.RESTRICT))
-    product = models.ForeignKey(Product, on_delete=models.RESTRICT)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
 
 
 class Interaction(BaseModel):

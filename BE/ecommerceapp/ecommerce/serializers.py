@@ -10,7 +10,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
+    # store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
 
     class Meta:
         model = User
