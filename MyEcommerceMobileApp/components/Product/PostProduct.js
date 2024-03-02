@@ -1,10 +1,17 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import MyContext from "../../configs/MyContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+import SelectDropdown from "react-native-select-dropdown";
+import * as ImagePicker from 'expo-image-picker'
+import Apis, { authApi, endpoints } from "../../configs/Apis";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const PostProduct = () => {
+const PostProduct = ({id, navigation}) => {
     const insets = useSafeAreaInsets();
     const [user, dispatch] = useContext(MyContext)
-
+    const [categories, setCategories] = useState({})
     const [product, setproduct] = useState({
         "name": "",
         "price": "",
@@ -12,44 +19,73 @@ const PostProduct = () => {
         "description": "",
         "quantity": "",
         "category": "",
-        "store": user.id
     })
+    let buttonText = "Them"
+
+    if(id !== undefined) {
+        const getProduct = async (id) => {
+            data = await Apis.get(id)
+            setProduct([...data])
+        }
+        getProduct(id)
+        buttonText = "Sua"
+    }
+    
+    useEffect(() => {
+        const loadCategories = async () => {
+          let url = endpoints["categories"];
+    
+          try {
+            let res = await Apis.get(url);
+            console.log("HEELLLOO")
+            console.log(res.data)
+            setCategories(res.data);
+          } catch (ex) {
+            console.error(ex);
+          }
+        };
+    
+        loadCategories();
+      }, []);
+
 
     const addOrUpdateProduct = async () => {
         let form = new FormData()
         for (let key in product) {
             if (key === "image") {
                 form.append(key, {
-                    uri: user[key].uri,
-                    name: user[key].fileName,
+                    uri: product[key].uri,
+                    name: product[key].fileName,
                     type: "image/jpeg"
                 })
             }
             else
-                form.append(key, user[key])
+                form.append(key, product[key])
         }
 
         try {
-            if (action === "Add") {
+            // if (action === "Add") {
+                console.log(form)
                 let res = await Apis.post(endpoints['products'], form,
                     {
                         headers: {
-                            "Content-Type": "multipart/form-data"
+                            "Content-Type": "multipart/form-data",
+                            'Authorization': `Bearer GYUkTCF2fuDsiwSNAQXlWo9h1mGQz2`
                         }
                     }
                 )
             console.error(res.data)
-            } else {
-                let res = await Apis.put(endpoints['product-details'], form,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data"
-                        }
-                    }
-                )
-            console.error(res.data)
-            }
-            navigation.navigate("Login")
+            // } else {
+            //     let res = await Apis.put(endpoints['product-details'], form,
+            //         {
+            //             headers: {
+            //                 "Content-Type": "multipart/form-data"
+            //             }
+            //         }
+            //     )
+            // console.error(res.data)
+            // }
+            navigation.navigate('Store', { storeId: user.store });
         } catch (ex) {
             console.error(ex)
         }
@@ -103,32 +139,41 @@ const PostProduct = () => {
                 <View className="flex-row border-b-2 border-inherit px-24 py-2">
                     <AntDesign name="product" size={24} color="black" />
                     <TextInput value={product.price} onChangeText={(t) => change("price", t)}
-                        className="ml-4"
+                        className="ml-4" inputMode="decimal"
                         placeholder="Nhập giá" >
                     </TextInput>
                 </View>
                 <View className="flex-row border-b-2 border-inherit px-24 py-2">
                     <AntDesign name="product" size={24} color="black" />
-                    <TextInput value={product.description} onChangeText={(t) => change("description", t)}
+                    <TextInput value={product.description} textAlignVertical="top" onChangeText={(t) => change("description", t)}
                         className="ml-4"
                         placeholder="Nhập mô tả">
                     </TextInput>
                 </View>
                 <View className="flex-row border-b-2 border-inherit px-24 py-2">
                     <AntDesign name="product" size={24} color="black" />
-                    <TextInput value={product.quantity} onChangeText={(t) => change("quantity", t)}
-                        className="ml-4"
+                    <TextInput value={product.quantity}  onChangeText={(t) => change("quantity", t)}
+                        className="ml-4" inputMode="numeric"
                         placeholder="Nhập số lượng">
                     </TextInput>
                 </View>
-                <View className="flex-row border-b-2 border-inherit px-24 py-2">
-                    <AntDesign name="product" size={24} color="black" />
-                    <TextInput value={product.category} onChangeText={(t) => change("category", t)}
-                        className="ml-4"
-                        placeholder="Chọn Cate">
-                    </TextInput>
-                </View>
-
+                <SelectDropdown
+                    data={categories}
+                    onSelect={(selectedItem, index) => {
+                        change('category', selectedItem.id)
+                        console.log(selectedItem, index)
+                    }}
+                    buttonTextAfterSelection={(selectedItem, index) => {
+                        // text represented after item is selected
+                        // if data array is an array of objects then return selectedItem.property to render after item is selected
+                        return selectedItem.name
+                    }}
+                    rowTextForSelection={(item, index) => {
+                        // text represented for each item in dropdown
+                        // if data array is an array of objects then return item.property to represent item in dropdown
+                        return item.name
+                    }}
+                />
 
                 <View className="">
                     <TouchableOpacity style={{
@@ -141,7 +186,7 @@ const PostProduct = () => {
                         <Text>Chọn hình sp...</Text>
                     </TouchableOpacity>
                 </View>
-                {user.image ? <Image style={{ width: 100, height: 100 }} source={{ uri: user.image.uri }} /> : ""}
+                {product.image ? <Image style={{ width: 100, height: 100 }} source={{ uri: product.image.uri }} /> : ""}
 
                 <View className="mt-6 items-center">
                     <TouchableOpacity className="items-center bg-orange-400 p-4 w-36 h-14" onPress={addOrUpdateProduct}>

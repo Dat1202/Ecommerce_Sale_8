@@ -151,8 +151,8 @@ const Cart = ({navigation}) => {
                             </td>
                             </tr> */}
 
-                            <View style={{ paddingHorizontal: 16 }} >
-                                <CartItem key={p.id} product={p} incre={(id)=>increQuantity(id)} decre={(id)=>decreQuantity(id)} deletee={(p) => deleteItem(p)}/>
+                            <View style={{ paddingHorizontal: 16 }} key={p.id} >
+                                <CartItem product={p} incre={(id)=>increQuantity(id)} decre={(id)=>decreQuantity(id)} deletee={(p) => deleteItem(p)}/>
                             </View>
                             </>
                         })}

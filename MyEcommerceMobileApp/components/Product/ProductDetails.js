@@ -82,16 +82,19 @@ const ProductDetails = ({ route, navigation }) => {
     console.log(cart)
   }
 
-  // if(user !== null && product.store.user === user) {
-  //   <>
-  //     <TouchableOpacity onPress={navigate('PostProduct')}> // vào trang add/update sp
-  //       <View>Update SP</View>
-  //     </TouchableOpacity>
-  //     <TouchableOpacity onPress={Apis.delete["product-details"](product.id)}> // send delete request ròi navigate về store: navigate('store')
-  //       <View>Delete SP</View>
-  //     </TouchableOpacity>
-  //   </>
-  // }
+  const productComponent = () => {
+    if(user !== null && product.store.user.id === user.id) {
+      return <>
+      <TouchableOpacity onPress={navigate('PostProduct')}> // vào trang add/update sp
+        <View>Update SP</View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={Apis.delete["product-details"](product.id)}> // send delete request ròi navigate về store: navigate('store')
+        <View>Delete SP</View>
+      </TouchableOpacity></>
+    }
+    return ""
+  }
+
 
   const handleViewCompare = () => {
     navigation.navigate('Compare', { "cateId": product.category.id, "productName": product.name });

@@ -101,7 +101,9 @@ const Profiles = ({ navigation }) => {
       </View >
 
       {user === null ? (
-        <Text>Chào</Text>
+        <View>
+          <Text>Chào bạn</Text>
+        </View>
       ) : (
         user.user_role === 3 && user.status === 'Approved' ? (
           <View>

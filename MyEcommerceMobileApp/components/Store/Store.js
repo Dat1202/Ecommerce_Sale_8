@@ -93,11 +93,7 @@ const Store = ({ route, navigation }) => {
     setSelectedCategory(category);
   };
 
-  if(user !== null && store.user === user) {
-    <TouchableOpacity onPress={navigation.navigate('PostProduct')}> // vào trang add/update sp
-      <View>Add SP</View>
-    </TouchableOpacity>
-  }
+
   const addCloudinaryDomain = (publicId) => {
     const cloudinaryDomain = 'res.cloudinary.com/dy4p98hhs/';
     return `https://${cloudinaryDomain}/${publicId}`;
@@ -147,7 +143,6 @@ const Store = ({ route, navigation }) => {
               </View>
             </View>
           </View>
-
           <View style={{ flex: 1 }}>
             <ScrollView
               horizontal
@@ -253,6 +248,16 @@ const styles = StyleSheet.create({
   },
   selectedCategoryText: {
     color: "#fd5c32",
-  }
+  },
+  container: {
+    flex: 1,
+  },
+  image: {
+    width: '100%',
+    height: 300,
+  },
+  viewShopButton: {
+    marginTop: 16,
+  },
 });
 export default Store;
