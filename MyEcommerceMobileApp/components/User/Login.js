@@ -17,8 +17,8 @@ const Login = ({ navigation }) => {
         let reqData = {
             "username": username,
             "password": password,
-            "client_id": "jh0EnJFe2uGzTc3kY7kbLHtUgW7NILwkcY9dpt17",
-            "client_secret": "GCUhrDHUFqnGiXGXBSrHV2V0Ip3vBoKSL4xoIVa4eLrNPNG64sptXUoEZqF91KBWHCLFJOEbR1SWDENVPzqXARDR24IpprelYyjWmsPOvWkmtzUe21VY3qRYPEWBRqs1",
+            "client_id": "du56L198nRgd04p8wJFaFUznF1jUxplgVsQlEbJR",
+            "client_secret": "UbYAbIKF6uF8Xi5uL5OT0fNb1OVndlR3onfdH83Z5zP3NAFcK2YJCGGjci8D7Vu1QcOYXC0R1j8Xl9U6Yh0kQfHLXXE2E67n8sxFhg7el19J7cZvxUWOJgcWpOi4gl8U",
             "grant_type": "password",
             "withCredentials": "true"
         }
@@ -30,8 +30,8 @@ const Login = ({ navigation }) => {
             let res = await Apis.post(endpoints['login'], {
                 "username": username,
                 "password": password,
-                "client_id": "jh0EnJFe2uGzTc3kY7kbLHtUgW7NILwkcY9dpt17",
-                "client_secret": "GCUhrDHUFqnGiXGXBSrHV2V0Ip3vBoKSL4xoIVa4eLrNPNG64sptXUoEZqF91KBWHCLFJOEbR1SWDENVPzqXARDR24IpprelYyjWmsPOvWkmtzUe21VY3qRYPEWBRqs1",
+                "client_id": "du56L198nRgd04p8wJFaFUznF1jUxplgVsQlEbJR",
+                "client_secret": "UbYAbIKF6uF8Xi5uL5OT0fNb1OVndlR3onfdH83Z5zP3NAFcK2YJCGGjci8D7Vu1QcOYXC0R1j8Xl9U6Yh0kQfHLXXE2E67n8sxFhg7el19J7cZvxUWOJgcWpOi4gl8U",
                 "grant_type": "password"
             });
             await AsyncStorage.setItem('access-token', res.data.access_token)

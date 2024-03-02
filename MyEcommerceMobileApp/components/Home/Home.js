@@ -27,14 +27,14 @@ const Home = ({ navigation, route }) => {
 
       try {
         let res = await Apis.get(url);
-        setProducts(res.data.results);
+        setProducts(res.data);
       } catch (ex) {
         console.error(ex);
       }
     };
 
     loadProducts();
-  }, [searchQuery, cateId]);
+  }, [searchQuery, cateId, navigation.isFocused()]);
 
   const handleSearch = (searchText) => {
     setSearchQuery(searchText);

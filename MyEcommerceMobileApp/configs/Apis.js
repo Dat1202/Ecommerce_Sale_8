@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, { Axios } from "axios";
 
-const Host = 'http://192.168.1.6:8000'
+const Host = 'http://192.168.1.12:8000'
 
 export const endpoints = {
     'categories': '/categories/',

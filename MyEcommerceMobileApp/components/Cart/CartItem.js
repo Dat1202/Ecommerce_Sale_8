@@ -1,15 +1,15 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, ToastAndroid, } from 'react-native'; import React, { useEffect, useState } from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
   
-const CartItem = ({product, deletee, decre, incre}) => {
+const CartItem = ({product, deletee, decre, incre, navigation}) => {
     console.log(product)
 
     return (
-        <View>
-            <TouchableOpacity // key={data.key} onPress={() => navigation.navigate('ProductDetails', {productID: data.id})}
+        <View >
+            <TouchableOpacity key={product.product} onPress={() => navigation.navigate('ProductDetails', {productId: product.product})}
                 style={{ width: '100%', height: 100, marginVertical: 6, flexDirection: 'row', alignItems: 'center', }}>
                     <View style={{ width: '30%', height: 100, padding: 14, justifyContent: 'center', alignItems: 'center', borderRadius: 10, marginRight: 22, }}>
-                        <Image // source={data.productImage}
+                        <Image source={{uri: product.image}}
                             style={{ width: '100%', height: '100%', resizeMode: 'contain', }} />
                     </View>
                     <View style={{ flex: 1, height: '100%', justifyContent: 'space-around', }}>
@@ -43,7 +43,5 @@ const CartItem = ({product, deletee, decre, incre}) => {
         </View>
     );
 };
-
-
 
 export default CartItem

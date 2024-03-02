@@ -25,8 +25,8 @@ import PostProduct from "./components/Product/PostProduct";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Compare from "./components/Product/Compare";
 import Chart from "./components/AdminStore/Chart";
-import Test from "./components/Home/Test";
 import { ActivityIndicator } from "react-native";
+import CartItem from "./components/Cart/CartItem";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,7 +34,7 @@ const countCartItem = async () => {
     try {
       const cart = await AsyncStorage.getItem('cart');
       const carts = JSON.parse(cart);
-      console.log(carts);
+    //   console.log(carts);
   
       if (carts !== null) {
         let totalQuantity = 0;
@@ -143,7 +143,7 @@ const App = () => {
                         <Tab.Screen name="Chart" component={Chart} options={{
                             tabBarItemStyle: { display: "none" }
                         }} />
-                        <Tab.Screen name="Test" component={Test} options={{
+                        <Tab.Screen name="CartItem" component={CartItem} options={{
                             tabBarItemStyle: { display: "none" }
                         }} />
                     </Tab.Navigator>

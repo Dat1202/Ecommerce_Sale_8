@@ -70,7 +70,7 @@ const PostProduct = ({id, navigation}) => {
                     {
                         headers: {
                             "Content-Type": "multipart/form-data",
-                            'Authorization': `Bearer GYUkTCF2fuDsiwSNAQXlWo9h1mGQz2`
+                            'Authorization': `Bearer kYcfNKkmQa9laESYZftXrHzwP0LySe`
                         }
                     }
                 )
@@ -84,6 +84,8 @@ const PostProduct = ({id, navigation}) => {
             //     )
             // console.error(res.data)
             // }
+            console.error(res.data)
+
             navigation.navigate('Store', { storeId: user.store });
         } catch (ex) {
             console.error(ex)

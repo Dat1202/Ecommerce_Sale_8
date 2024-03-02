@@ -41,7 +41,7 @@ class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
 class ProductViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all().order_by('?')
     serializer_class = serializers.ProductSerializer
-    pagination_class = paginators.ProductPaginator
+    # pagination_class = paginators.ProductPaginator
 
     def create(self, request, *args, **kwargs):
         store_id = request.user.store.id
@@ -51,9 +51,6 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveUp
         image = request.data.get('image')
         description = request.data.get('description')
         quantity = request.data.get('quantity')
-        print(request)
-        print("Heeee")
-        print(category_id)
         category = get_object_or_404(Category, id=category_id)
 
         store = get_object_or_404(Store, id=store_id)

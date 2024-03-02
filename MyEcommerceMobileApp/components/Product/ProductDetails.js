@@ -17,7 +17,6 @@ const ProductDetails = ({ route, navigation }) => {
   const [, cartDispatch] = useContext(MyCartContext);
   const [user, dispatch] = useContext(MyContext);
 
-
   React.useEffect(() => {
     const loadProduct = async () => {
       try {
@@ -85,7 +84,8 @@ const ProductDetails = ({ route, navigation }) => {
             "product": p.id,
             "name": p.name,
             "unit_price": p.price,
-            "quantity": 1
+            "quantity": 1,
+            "image": p.image
         };
     }
     await AsyncStorage.setItem("cart", JSON.stringify(cart))
@@ -124,7 +124,7 @@ const ProductDetails = ({ route, navigation }) => {
     <ScrollView className="bg-slate-100" style={styles.container}>
       <View className="relative">
         <Image source={{ uri: product.image }} style={styles.image} />
-        <TouchableOpacity className="absolute z-20 top-8 left-4 border-2 border-transparent	rounded-full bg-gray-400" onPress={handleGoBack}>
+        <TouchableOpacity className="absolute z-20 top-20 left-4 border-2 border-transparent	rounded-full bg-gray-400" onPress={handleGoBack}>
           <Ionicons name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
       </View>

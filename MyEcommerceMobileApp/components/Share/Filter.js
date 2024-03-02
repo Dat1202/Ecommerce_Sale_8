@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   categoryButton: {
     paddingVertical: 8,
-    paddingHorizontal: 18,
+    paddingHorizontal: 26,
     marginHorizontal: 5,
   },
   categoryButtonText: {

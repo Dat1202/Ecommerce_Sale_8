@@ -44,13 +44,13 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 INSTALLED_APPS = [
+    'ecommerce.apps.EcommerceConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ecommerce.apps.EcommerceConfig',
     'ckeditor',
     'ckeditor_uploader',
     'rest_framework',

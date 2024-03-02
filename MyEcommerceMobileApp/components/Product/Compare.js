@@ -19,7 +19,7 @@ const Compare = ({ navigation, route }) => {
                 url = `${url}?cate_id=${cateId}&q=${shortenedProductName}`;
             try {
                 let res = await Apis.get(url);
-                setProductCompare(res.data.results);
+                setProductCompare(res.data);
             } catch (ex) {
                 console.error(ex);
             }
@@ -36,20 +36,17 @@ const Compare = ({ navigation, route }) => {
         <View style={{
             paddingTop: insets.top,
         }}>
-            <View>
+            {/* <View>
                 <Filter route={route} />
-            </View>
+            </View> */}
             <ScrollView>
                 <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", backgroundColor: '#E6E6E6', width: '100%' }}>
-                    {productCompare.length === 0 ? (
-                        <Text>Không có sản phẩm</Text>
-                    ) : (
-                        productCompare.map((data) => (
-                            <View key={data.id}>
-                                <CardItem navigation={navigation} data={data} />
-                            </View>
-                        ))
-                    )}
+
+                    {productCompare.map((data) => (
+                        <View key={data.id}>
+                            <CardItem navigation={navigation} data={data} />
+                        </View>
+                    ))}
                 </View>
             </ScrollView>
         </View>
