@@ -17,32 +17,6 @@ const Profiles = ({ navigation }) => {
       "type": "logout",
     })
   }
-  //                                      //
-  // 1. chưa đăng kí
-  // 2. Đăng kí rồi
-  //    2.1 chưa duyệt
-  //    2.2 đã duyệt
-  //    2.3 hủy
-  // Check xem đã có chưa(đang là user hay store trong role) 
-  // -> chưa(user) thì vào trang đăng kí
-  // -> rồi(pending) thì báo đang chờ/đã hủy, có link đăng kí
-
-
-  const isRegistered = () => {
-    if (user.user_role === "user") {
-      if (user.status === "Pending") {
-        <Text>Yêu cầu về cửa hàng của bạn đang được duyệt, vui lòng chờ!!!</Text>
-      } else if (user.status === "") {// rỗng tức là chưa đăng kí
-        <TouchableOpacity onPress={() => navigation.navigate('RegisterStore')}>
-          <Text>Đăng kí Store</Text>
-        </TouchableOpacity>
-      }
-    } else if (user.user_role === "store") {
-      <TouchableOpacity onPress={() => navigation.navigate('Store')}>
-        <Text>Store của tui</Text>
-      </TouchableOpacity>
-    }
-  }
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -101,57 +75,35 @@ const Profiles = ({ navigation }) => {
       </View >
 
       {user === null ? (
-        <Text>Chào</Text>
+        <View className="border-y-2	p-2 border-slate-300			 ">
+          <Text>Chào bạn</Text>
+        </View>
       ) : (
         user.user_role === 3 && user.status === 'Approved' ? (
           <View>
-            <TouchableOpacity onPress={handleViewShop}>
-              <Text>Store của tui</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => navigation.navigate('Chart')}>
-              <Text>Thống kê</Text>
-            </TouchableOpacity>
+            <View className="border-y-2	p-2 border-slate-300			 ">
+              <TouchableOpacity onPress={handleViewShop}>
+                <Text>Store của tui</Text>
+              </TouchableOpacity>
+            </View>
+            <View className="border-y-2	p-2 border-slate-300			 ">
+              <TouchableOpacity onPress={() => navigation.navigate('Chart')}>
+                <Text>Thống kê</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ) : (
           user.user_role === 2 && user.status === '' ? (
-            <TouchableOpacity onPress={() => navigation.navigate('RegisterStore')}>
-              <Text>Tạo cửa hàng</Text>
-            </TouchableOpacity>
+            <View className="border-y-2	p-2 border-slate-300			 ">
+              <TouchableOpacity onPress={() => navigation.navigate('RegisterStore')}>
+                <Text>Tạo cửa hàng</Text>
+              </TouchableOpacity>
+            </View>
           ) : (
             user.status === 'Pending ' && <Text>Cửa hàng chờ xác nhận admin</Text>
           )
         )
       )}
-
-
-      <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Test')}>
-          <Text>Đến trang RegisterStore</Text>
-        </TouchableOpacity>
-      </View>
-      {/* <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('rtg')}>
-          <Text>Đrểe</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Login')}>
-          <Text>Login</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Chart')}>
-          <Text>Chart</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.container}>
-        <Logout />
-      </View> */}
     </View >
   )
 }

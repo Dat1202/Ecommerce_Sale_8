@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useEffect, useReducer, useState } from "react";
 import Home from './components/Home/Home'
 import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
@@ -25,29 +25,54 @@ import PostProduct from "./components/Product/PostProduct";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Compare from "./components/Product/Compare";
 import Chart from "./components/AdminStore/Chart";
-import Test from "./components/Home/Test";
+import { ActivityIndicator } from "react-native";
+import CartItem from "./components/Cart/CartItem";
 
 const Tab = createBottomTabNavigator();
 
-const countCartItem = () => {
-    var carts = null;
-    let getCarts = async (carts) => {
-        let cart = await AsyncStorage.getItem('cart');
-        return JSON.parse(cart)
+const countCartItem = async () => {
+    try {
+      const cart = await AsyncStorage.getItem('cart');
+      const carts = JSON.parse(cart);
+    //   console.log(carts);
+  
+      if (carts !== null) {
+        let totalQuantity = 0;
+        for (const key in carts) {
+            if (carts.hasOwnProperty(key)) {
+              const item = carts[key];
+              const quantity = item.quantity;
+              totalQuantity += quantity;
+            }
+          }
+        return totalQuantity;
+      }
+    } catch (error) {
+      console.error('Error retrieving cart:', error);
     }
-    getCarts().then(x => carts = x)
-    console.log(carts)
-    if (carts !== null) {
-        return Object.values(carts).reduce((init, current) => init + current["quantity"], 0);
-    }
+  
     return 0;
-  }
+  };
 
 const App = () => {
     var base_color = "#ff5722"
     const [user, dispatch] = useReducer(MyUserReducer, null)
-    const [cartCounter, cartDispatch] = useReducer(MyCartCounterReducer , countCartItem());
-    console.log(cartCounter)
+    const [counter, setCounter] = useState(0);
+    const [cartCounter, cartDispatch] = useReducer(MyCartCounterReducer, counter);
+    
+    useEffect(() => {
+        const fetchCartQuantity = async () => {
+            const quantity = await countCartItem();
+            await setCounter(quantity);
+            cartDispatch({
+                "type": "update",
+                "payload": counter
+            })
+        };
+        
+        fetchCartQuantity();
+    }, []);
+
     return (
         <SafeAreaProvider>
             <MyContext.Provider value={[user, dispatch]}>
@@ -118,7 +143,7 @@ const App = () => {
                         <Tab.Screen name="Chart" component={Chart} options={{
                             tabBarItemStyle: { display: "none" }
                         }} />
-                        <Tab.Screen name="Test" component={Test} options={{
+                        <Tab.Screen name="CartItem" component={CartItem} options={{
                             tabBarItemStyle: { display: "none" }
                         }} />
                     </Tab.Navigator>

@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, useWindowDimensions } from 'react-native';
-import Apis, { endpoints } from '../../configs/Apis';
+import Apis, { authApi, endpoints } from '../../configs/Apis';
 import { Ionicons } from '@expo/vector-icons';
 import RenderHTML from 'react-native-render-html';
 import { Entypo } from '@expo/vector-icons';
 import Comment from './Comment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MyContext from '../../configs/MyContext';
+import MyCartContext from '../../configs/MyCartContext';
 
 const ProductDetails = ({ route, navigation }) => {
   const { productId } = route.params;
   const [product, setProduct] = React.useState(null);
   const [productSold, setProductSold] = React.useState(null);
   const windowDimensions = useWindowDimensions();
+  const [, cartDispatch] = useContext(MyCartContext);
+  const [user, dispatch] = useContext(MyContext);
 
   React.useEffect(() => {
     const loadProduct = async () => {
@@ -34,6 +38,7 @@ const ProductDetails = ({ route, navigation }) => {
     };
     loadProductSold();
     loadProduct();
+    console.log(user)
   }, [productId]);
 
   if (product === null) {
@@ -61,6 +66,10 @@ const ProductDetails = ({ route, navigation }) => {
   const addToCart = async (p) => {
     // Lưu đơn vào cookies
     // let cart = cookie.load("cart") || null;
+    cartDispatch({
+        "type": "inc",
+        "payload": 1
+    });
     let cart = await AsyncStorage.getItem("cart") || null;
     cart = JSON.parse(cart)
     if (cart === null)
@@ -75,23 +84,33 @@ const ProductDetails = ({ route, navigation }) => {
             "product": p.id,
             "name": p.name,
             "unit_price": p.price,
-            "quantity": 1
+            "quantity": 1,
+            "image": p.image
         };
     }
     await AsyncStorage.setItem("cart", JSON.stringify(cart))
     console.log(cart)
   }
 
-  // if(user !== null && product.store.user === user) {
-  //   <>
-  //     <TouchableOpacity onPress={navigate('PostProduct')}> // vào trang add/update sp
-  //       <View>Update SP</View>
-  //     </TouchableOpacity>
-  //     <TouchableOpacity onPress={Apis.delete["product-details"](product.id)}> // send delete request ròi navigate về store: navigate('store')
-  //       <View>Delete SP</View>
-  //     </TouchableOpacity>
-  //   </>
-  // }
+  const productComponent = () => {
+    if(user !== null && product.store.user.id === user.id) {
+      return <>
+
+    </>
+    }
+    return ""
+  }
+
+  const deleteProduct = async () => {
+    try {
+      let access_token = await AsyncStorage.getItem('access-token')
+      let res = await authApi(access_token).delete(endpoints["product-details"](productId))
+      if (res.status === 204)
+        navigation.navigate('Store', { storeId: product.store.id });
+    } catch (ex) {
+      console.error(ex)
+    }
+  }
 
   const handleViewCompare = () => {
     navigation.navigate('Compare', { "cateId": product.category.id, "productName": product.name });
@@ -105,7 +124,7 @@ const ProductDetails = ({ route, navigation }) => {
     <ScrollView className="bg-slate-100" style={styles.container}>
       <View className="relative">
         <Image source={{ uri: product.image }} style={styles.image} />
-        <TouchableOpacity className="absolute z-20 top-8 left-4 border-2 border-transparent	rounded-full bg-gray-400" onPress={handleGoBack}>
+        <TouchableOpacity className="absolute z-20 top-20 left-4 border-2 border-transparent	rounded-full bg-gray-400" onPress={handleGoBack}>
           <Ionicons name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
       </View>
@@ -126,6 +145,20 @@ const ProductDetails = ({ route, navigation }) => {
           </View>
         </View>
       </View>
+      {user !== null && product.store.user.id === user.id?<>      
+        <View className="bg-white p-4 flex-row justify-between	">
+          <View>
+            <TouchableOpacity className="border-2	border-red-600 p-1 " style={styles.viewShopButton} onPress={()=>deleteProduct()}>
+              <Text className="text-red-500	">Delete SP </Text>
+            </TouchableOpacity>
+          </View>
+          {/* <View>
+            <TouchableOpacity onPress={()=> navigation.navigate('PostProduct', { id: product.store.id })}> // vào trang add/update sp
+              <View>Update SP</View>
+            </TouchableOpacity>
+          </View> */}
+        </View>
+      </>:<></>}
 
       <View className="bg-white p-4 flex-row justify-between	">
         <View>

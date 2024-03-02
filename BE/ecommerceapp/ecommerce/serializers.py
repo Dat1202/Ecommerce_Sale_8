@@ -10,11 +10,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
+    # store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'last_name', 'first_name', 'avatar', 'store', 'user_role', 'status']
+        fields = ['id', 'username', 'password', 'last_name', 'first_name', 'avatar', 'store', 'user_role', 'status']
 
         extra_kwargs = {
             'password': {

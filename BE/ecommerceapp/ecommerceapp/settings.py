@@ -32,7 +32,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS = [
     '192.168.1.5',
     'http://192.168.1.12:8081', '192.168.1.12','http://192.168.1.7:8081', '192.168.1.7'
-    ,'http://192.168.1.8:8081', '192.168.1.8'
+    ,'http://192.168.1.8:8081', '192.168.1.8', '192.168.1.6'
 ]
 
 CORS_ALLOW_METHODS = [
@@ -44,13 +44,13 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 INSTALLED_APPS = [
+    'ecommerce.apps.EcommerceConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ecommerce.apps.EcommerceConfig',
     'ckeditor',
     'ckeditor_uploader',
     'rest_framework',

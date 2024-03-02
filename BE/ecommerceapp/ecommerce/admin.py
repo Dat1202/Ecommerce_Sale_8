@@ -13,7 +13,6 @@ from django.shortcuts import render
 
 class EcommerceAdminSite(admin.AdminSite):
     site_header = "Ecommerce"
-
     class Media:
         css = {
             'all': ('/static/css/style.css',)
@@ -53,7 +52,7 @@ class EcommerceAdminSite(admin.AdminSite):
             'stats_revenue': result,
         })
 
-    def stats(self, request):
+    def stats(request):
         stats_count_product_by_cate = Category.objects.annotate(count=Count('product__name')).values('name', 'count')
         stats_count_product = Product.objects.count()
         stats_count_cate = Category.objects.count()
@@ -69,7 +68,7 @@ class EcommerceAdminSite(admin.AdminSite):
             'stats_revenue_store': stats_revenue_store
         })
 
-    def store_approval(self, request):
+    def store_approval(request):
         if request.method == 'POST':
             users = User.objects.filter(pk__in=request.POST.getlist("users"))
             if request.POST["action"] == "reject":
@@ -84,33 +83,18 @@ class EcommerceAdminSite(admin.AdminSite):
         })
 
 
-class ProductForm(forms.ModelForm):
-    description = forms.CharField(widget=CKEditorUploadingWidget)
+class CategoryForm(forms.ModelForm):
 
     class Meta:
-        model = Product
+        model = Category
         fields = '__all__'
 
 
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'active', 'name', 'price', 'description', 'quantity', 'category']
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'name']
     search_fields = ['name']
-    list_filter = ['category']
-    readonly_fields = ['img']
-    form = ProductForm
-
-    def save_model(self, request, obj, form, change):
-        if getattr(obj, 'store_id ', None) is None:
-            obj.store_id = request.user.store.id
-        obj.save()
-
-    def img(self, product):
-        if product:
-            return mark_safe(
-                '<img src="/static/{url}" width="120" />'.format(url=product.image.name)
-            )
-
+    list_filter = ['name']
+    form = CategoryForm
 
 admin_site = EcommerceAdminSite(name='Ecommerce')
-admin_site.register(Category)
-admin_site.register(Product, ProductAdmin)
+admin_site.register(Category, CategoryAdmin)
