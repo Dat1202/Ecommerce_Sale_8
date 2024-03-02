@@ -51,8 +51,11 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveUp
         image = request.data.get('image')
         description = request.data.get('description')
         quantity = request.data.get('quantity')
-
+        print(request)
+        print("Heeee")
+        print(category_id)
         category = get_object_or_404(Category, id=category_id)
+
         store = get_object_or_404(Store, id=store_id)
 
         product = Product.objects.create(name=name,price=price,image=image,description=description,quantity=quantity,store=store,category=category)
@@ -74,15 +77,15 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveUp
 
         return queries
 
-    # def get_permissions(self):
-    #     if self.action == "retrieve":
-    #         return [permissions.AllowAny()]
-    #     return [StoreOwnerPermission()]
-    #
-    # def get_object(self):
-    #     obj = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
-    #     self.check_object_permissions(self.request, obj)
-    #     return obj
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [permissions.AllowAny()]
+        return [StoreOwnerPermission()]
+
+    def get_object(self):
+        obj = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
+        self.check_object_permissions(self.request, obj)
+        return obj
 
     @action(methods=['get'], detail=True)
     def comments(self, request, pk):

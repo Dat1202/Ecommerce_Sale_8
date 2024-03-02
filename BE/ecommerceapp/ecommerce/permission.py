@@ -8,6 +8,7 @@ class OwnerAuthenticated(permissions.IsAuthenticated):
 
 class StoreOwnerPermission(permissions.IsAuthenticated):
     def has_permission(self, request, view):
+        print(f"CurrentUser: {request.user}")
         return request.user and request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
