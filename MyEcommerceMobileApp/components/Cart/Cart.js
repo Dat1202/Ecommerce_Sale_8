@@ -12,9 +12,9 @@ const Cart = ({navigation}) => {
     const [, cartDispatch] = useContext(MyCartContext);
     const [carts, setCarts] = useState(null);
     const deepEqual = require('deep-equal');
+    const [total, setTotal] = useState(0);
 
     useEffect(() => {
-        console.log("reload!")
         let isSameObj = (obj1, obj2) => {
             for(let item in obj1 ){
                 try {
@@ -42,6 +42,7 @@ const Cart = ({navigation}) => {
             }
         }
         loadCart();
+        setTotal(getTotalPrice(carts))
     }, [carts])
 
     const updateItem = async () => {
@@ -53,6 +54,22 @@ const Cart = ({navigation}) => {
             "payload": Object.values(carts).reduce((init, current) => init + current["quantity"], 0)
         })
     }
+
+    function getTotalPrice(obj) {
+        let totalPrice = 0;
+        
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            const item = obj[key];
+            const quantity = item.quantity;
+            const unitPrice = parseFloat(item.unit_price);
+            const itemTotalPrice = quantity * unitPrice;
+            totalPrice += itemTotalPrice;
+          }
+        }
+        
+        return totalPrice.toFixed(2);
+      }
 
     const increQuantity = async (id) => {
         let new_cart = JSON.parse(JSON.stringify(carts))
@@ -68,7 +85,6 @@ const Cart = ({navigation}) => {
     }
 
     const deleteItem = async (item) => {
-        console.log(item.product)
         if (item.product in carts) {
             // cartDispatch({
             //     "type": "dec",
@@ -87,10 +103,8 @@ const Cart = ({navigation}) => {
         const process = async () => {
             data = []
             for (let item in carts) {
-                console.log(item)
                 data.push(carts[item])
             }
-            console.log(data)
             let access_token = AsyncStorage.getItem('access-token')
             let res = await authApi(access_token).post(endpoints['pay'], data);
             if (res.status === 200) {
@@ -101,6 +115,7 @@ const Cart = ({navigation}) => {
                     "type": "update",
                     "payload": 0
                 });
+                
             }
         }
 
@@ -152,7 +167,7 @@ const Cart = ({navigation}) => {
                             </tr> */}
 
                             <View style={{ paddingHorizontal: 16 }} key={p.id} >
-                                <CartItem product={p} incre={(id)=>increQuantity(id)} decre={(id)=>decreQuantity(id)} deletee={(p) => deleteItem(p)}/>
+                                <CartItem  product={p} incre={(id)=>increQuantity(id)} decre={(id)=>decreQuantity(id)} deletee={(p) => deleteItem(p)}/>
                             </View>
                             </>
                         })}
@@ -230,7 +245,7 @@ const Cart = ({navigation}) => {
                                 </Text>
                                 <Text style={{ fontSize: 12, fontWeight: '400', opacity: 0.8,
                                         // color: COLOURS.black,
-                                    }}> &#8377; total
+                                    }}> {total} VNĐ total
                                 </Text>
                             </View>
                         </View>

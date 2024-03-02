@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, useWindowDimensions } from 'react-native';
-import Apis, { endpoints } from '../../configs/Apis';
+import Apis, { authApi, endpoints } from '../../configs/Apis';
 import { Ionicons } from '@expo/vector-icons';
 import RenderHTML from 'react-native-render-html';
 import { Entypo } from '@expo/vector-icons';
 import Comment from './Comment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MyContext from '../../configs/MyContext';
 
 const ProductDetails = ({ route, navigation }) => {
   const { productId } = route.params;
   const [product, setProduct] = React.useState(null);
   const [productSold, setProductSold] = React.useState(null);
   const windowDimensions = useWindowDimensions();
+  const [user, dispatch] = useContext(MyContext);
+
 
   React.useEffect(() => {
     const loadProduct = async () => {
@@ -34,6 +37,7 @@ const ProductDetails = ({ route, navigation }) => {
     };
     loadProductSold();
     loadProduct();
+    console.log(user)
   }, [productId]);
 
   if (product === null) {
@@ -85,16 +89,22 @@ const ProductDetails = ({ route, navigation }) => {
   const productComponent = () => {
     if(user !== null && product.store.user.id === user.id) {
       return <>
-      <TouchableOpacity onPress={navigate('PostProduct')}> // vào trang add/update sp
-        <View>Update SP</View>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={Apis.delete["product-details"](product.id)}> // send delete request ròi navigate về store: navigate('store')
-        <View>Delete SP</View>
-      </TouchableOpacity></>
+
+    </>
     }
     return ""
   }
 
+  const deleteProduct = async () => {
+    try {
+      let access_token = await AsyncStorage.getItem('access-token')
+      let res = await authApi(access_token).delete(endpoints["product-details"](productId))
+      if (res.status === 204)
+        navigation.navigate('Store', { storeId: product.store.id });
+    } catch (ex) {
+      console.error(ex)
+    }
+  }
 
   const handleViewCompare = () => {
     navigation.navigate('Compare', { "cateId": product.category.id, "productName": product.name });
@@ -129,6 +139,20 @@ const ProductDetails = ({ route, navigation }) => {
           </View>
         </View>
       </View>
+      {user !== null && product.store.user.id === user.id?<>      
+        <View className="bg-white p-4 flex-row justify-between	">
+          <View>
+            <TouchableOpacity className="border-2	border-red-600 p-1 " style={styles.viewShopButton} onPress={()=>deleteProduct()}>
+              <Text className="text-red-500	">Delete SP </Text>
+            </TouchableOpacity>
+          </View>
+          {/* <View>
+            <TouchableOpacity onPress={()=> navigation.navigate('PostProduct', { id: product.store.id })}> // vào trang add/update sp
+              <View>Update SP</View>
+            </TouchableOpacity>
+          </View> */}
+        </View>
+      </>:<></>}
 
       <View className="bg-white p-4 flex-row justify-between	">
         <View>

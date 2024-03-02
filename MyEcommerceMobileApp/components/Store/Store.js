@@ -10,6 +10,7 @@ import CardItem from '../Share/CardItem';
 import Filter from '../Share/Filter';
 import Review from './Review';
 import MyContext from '../../configs/MyContext';
+import { useIsFocused } from '@react-navigation/native';
 
 const Store = ({ route, navigation }) => {
   const [selectedCategory, setSelectedCategory] = React.useState('Sản phẩm');
@@ -22,6 +23,7 @@ const Store = ({ route, navigation }) => {
   const { storeId, sortBy, order } = route.params;
   const [user, dispatch] = useContext(MyContext)
   const [storeAvgStar, setStoreAvgStar] = React.useState(null);
+  const isFocused = useIsFocused();
 
   React.useEffect(() => {
     const loadStore = async () => {
@@ -78,8 +80,7 @@ const Store = ({ route, navigation }) => {
     loadCateStore();
     loadStore();
     loadStoreAvgStar();
-
-  }, [sortBy, order, searchQuery]);
+  }, [sortBy, order, searchQuery, navigation.isFocused()]);
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -92,7 +93,6 @@ const Store = ({ route, navigation }) => {
   const handleCategoryPress = (category) => {
     setSelectedCategory(category);
   };
-
 
   const addCloudinaryDomain = (publicId) => {
     const cloudinaryDomain = 'res.cloudinary.com/dy4p98hhs/';
@@ -143,6 +143,7 @@ const Store = ({ route, navigation }) => {
               </View>
             </View>
           </View>
+
           <View style={{ flex: 1 }}>
             <ScrollView
               horizontal
@@ -150,6 +151,7 @@ const Store = ({ route, navigation }) => {
               contentContainerStyle={styles.container1}
               style={{}}
             >
+              
               {data.map((item, index) => (
                 <TouchableOpacity
                   key={index}
@@ -174,7 +176,15 @@ const Store = ({ route, navigation }) => {
           {selectedCategory === 'Sản phẩm' && (
             <>
               <Filter route={route} />
-
+              {user !== null && store.user.id === user.id?<>      
+                <View className="bg-white p-4 flex-row justify-between	">
+                  <View>
+                    <TouchableOpacity className="border-2	border-red-600 p-1 " style={styles.viewShopButton} onPress={()=>{navigation.navigate('PostProduct')}}>
+                      <Text className="text-red-500	">Add Product </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </>:<></>}
               <View className="flex-wrap flex-row justify-between	" style={{
                 backgroundColor: '#E6E6E6',
                 width: '100%',
@@ -217,6 +227,7 @@ const Store = ({ route, navigation }) => {
 
         </ScrollView>
       }
+
     </View>
   )
 }
@@ -248,16 +259,6 @@ const styles = StyleSheet.create({
   },
   selectedCategoryText: {
     color: "#fd5c32",
-  },
-  container: {
-    flex: 1,
-  },
-  image: {
-    width: '100%',
-    height: 300,
-  },
-  viewShopButton: {
-    marginTop: 16,
-  },
+  }
 });
 export default Store;

@@ -20,7 +20,7 @@ export const endpoints = {
     'comments': (productId) => `/products/${productId}/comments/`,
     'add-comments': (productId) => `/products/${productId}/add_comments/`,
     'sold': (productId) => `/products/${productId}/sold/`,
-    'product-details': (productId) => `/products/${productId}`,
+    'product-details': (productId) => `/products/${productId}/`,
     'register-store': '/store/register-store/',
     'pay': '/payment/'
 }

@@ -12,7 +12,7 @@ const PostProduct = ({id, navigation}) => {
     const insets = useSafeAreaInsets();
     const [user, dispatch] = useContext(MyContext)
     const [categories, setCategories] = useState({})
-    const [product, setproduct] = useState({
+    const [product, setProduct] = useState({
         "name": "",
         "price": "",
         "image": "",
@@ -74,7 +74,6 @@ const PostProduct = ({id, navigation}) => {
                         }
                     }
                 )
-            console.error(res.data)
             // } else {
             //     let res = await Apis.put(endpoints['product-details'], form,
             //         {
@@ -104,7 +103,7 @@ const PostProduct = ({id, navigation}) => {
     }
 
     const change = (field, value) => {
-        setproduct(current => {
+        setProduct(current => {
             return { ...current, [field]: value }
         })
     }
